@@ -29,7 +29,9 @@
   },
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "import/no-named-as-default": "off"
   },
   "globals": {
     "chrome": "readonly"

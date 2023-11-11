@@ -2,14 +2,23 @@ import { useState, useEffect } from 'react';
 import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import { GmailList, GmailListMessage } from '@root/src/gmail';
+import { Category, GmailList, GmailListMessage } from '@root/src/gmail';
 import { http } from '@root/src/libs/axios';
 
 import styled from 'styled-components';
+import { SearchQuery } from '@root/src/libs/buildQuery';
 
 const Popup = () => {
   const [mailList, setMailList] = useState<GmailListMessage[]>([]);
 
+  const [startDate, setStartDate] = useState<Date>(new Date(0));
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [categories, setcategories] = useState<Category[]>(['promotions', 'social']);
+  const [isUnread, setIsUnread] = useState<boolean>(true);
+  const [isStarred, setIsStarred] = useState<boolean>(false);
+  const [isImportant, setIsImportant] = useState<boolean>(false);
+
+  // category:promotions OR category:social
   /**
    * Manage Authentication
    */
@@ -19,6 +28,7 @@ const Popup = () => {
         console.log('Error getting auth token:', chrome.runtime.lastError.message);
         return;
       }
+      console.log('token', token);
       http.interceptors.request.use(config => {
         config.headers['Authorization'] = `Bearer ${token}`;
         return config;
@@ -35,18 +45,31 @@ const Popup = () => {
   const handleClickGetList = async () => {
     let nextPageToken = null;
     let allMails = [];
+
+    const query = new SearchQuery({
+      startDate,
+      endDate,
+      categories,
+      isUnread,
+      isStarred,
+      isImportant,
+    });
     // TODO: 쿼리 파라미터 넣기
+    console.log('>>', query.buildQuery());
 
     try {
+      setMailList([]);
       do {
         const res = await http.get<GmailList>('/messages', {
           params: {
             maxResults: 500,
+            q: query.buildQuery(),
             pageToken: nextPageToken,
           },
         });
 
         const messages = res.data.messages;
+        console.log('messages', messages);
         if (messages) {
           allMails = [...allMails, ...messages];
         }
@@ -63,6 +86,7 @@ const Popup = () => {
   const handleClickCleanUp = async () => {
     const MAX_BATCH_SIZE = 1000;
     const removeIds = mailList.map(mail => mail.id);
+    console.log('removeIds', removeIds);
 
     try {
       for (let i = 0; i < removeIds.length; i += MAX_BATCH_SIZE) {

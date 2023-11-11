@@ -7,6 +7,12 @@
 // q=in:spam // 스팸메일
 
 /**
+ * Gmail List Query
+ */
+export type Category = 'promotions' | 'social';
+// export type
+
+/**
  * Gmail API: get
  */
 export interface GmailMessageHeader {

@@ -41,7 +41,7 @@ const manifest: chrome.runtime.ManifestV3 = {
   ],
   oauth2: {
     client_id: '935308185746-7023qdnmd2j0tvu1vab7ke9odduglpga.apps.googleusercontent.com',
-    scopes: ['email', 'profile', 'openid', 'https://www.googleapis.com/auth/userinfo.email'],
+    scopes: ['https://www.googleapis.com/auth/userinfo.email', 'https://mail.google.com/'],
   },
 };
 

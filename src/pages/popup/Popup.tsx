@@ -12,7 +12,9 @@ const Popup = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   const getAuthToken = () => {
+    console.log('들어옴');
     chrome.identity.getAuthToken({ interactive: true }, token => {
+      console.log();
       if (chrome.runtime.lastError) {
         console.log('Error getting auth token:', chrome.runtime.lastError.message);
         return;
@@ -20,10 +22,11 @@ const Popup = () => {
 
       setToken(token);
       console.log('Access Token:', token);
-
+      console.log('끝남1');
       // Optionally: Use the token to get the user's email or other information
       fetchUserInformation(token);
     });
+    console.log('끝남2');
   };
 
   const fetchUserInformation = (authToken: string) => {

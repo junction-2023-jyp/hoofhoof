@@ -99,6 +99,14 @@ const Popup = () => {
     }
   };
 
+  const handleFinalModal = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      console.log('tabs', tabs);
+      if (tabs.length === 0) return; // 탭이 존재하지 않으면 중단
+      chrome.tabs.sendMessage(tabs[0].id, { type: 'TOGGLE_MODAL', isOpen: true });
+    });
+  };
+
   return (
     <S.Wrapper>
       <div>
@@ -110,6 +118,7 @@ const Popup = () => {
       </div>
       <button onClick={handleClickGetList}>Get Mailing List</button>
       <button onClick={handleClickCleanUp}>Delete Mail</button>
+      <button onClick={handleFinalModal}>Open Modal</button>
     </S.Wrapper>
   );
 };

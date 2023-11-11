@@ -1,9 +1,17 @@
-import { useEffect } from 'react';
+// App.tsx
+import React, { useState } from 'react';
+import Modal from './Modal';
 
-export default function App() {
-  useEffect(() => {
-    console.log('content view loaded');
-  }, []);
+const App: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState(true);
 
-  return <div className="">content view</div>;
-}
+  const closeModal = () => setModalOpen(false);
+
+  return (
+    <div>
+      <Modal isOpen={modalOpen} onClose={closeModal} />
+    </div>
+  );
+};
+
+export default App;

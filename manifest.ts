@@ -8,7 +8,7 @@ const manifest: chrome.runtime.ManifestV3 = {
   name: packageJson.name,
   version: packageJson.version,
   description: packageJson.description,
-  permissions: ['storage', 'identity'],
+  permissions: ['storage', 'identity', 'activeTab', 'scripting'],
   options_page: 'src/pages/options/index.html',
   background: {
     service_worker: 'src/pages/background/index.js',
@@ -43,6 +43,7 @@ const manifest: chrome.runtime.ManifestV3 = {
     client_id: '935308185746-7023qdnmd2j0tvu1vab7ke9odduglpga.apps.googleusercontent.com',
     scopes: ['https://www.googleapis.com/auth/userinfo.email', 'https://mail.google.com/'],
   },
+  all_frames: true,
 };
 
 export default manifest;

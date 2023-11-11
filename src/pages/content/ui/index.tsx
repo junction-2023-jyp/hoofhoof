@@ -22,4 +22,12 @@ shadowRoot.appendChild(rootIntoShadow);
  * Please refer to the PR link above and go back to the contentStyle.css implementation, or raise a PR if you have a better way to improve it.
  */
 
-// createRoot(rootIntoShadow).render(<App />);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('request', request);
+  if (request.type === 'TOGGLE_MODAL') {
+    if (request.isOpen) {
+      //   console.log('open modal', request.status);
+      createRoot(rootIntoShadow).render(<App />);
+    }
+  }
+});

@@ -25,9 +25,9 @@ const Popup = () => {
   // Status
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date>(new Date());
-  const [isUnread, setIsUnread] = useState<boolean>(false);
-  const [isStarred, setIsStarred] = useState<boolean>(false);
-  const [isImportant, setIsImportant] = useState<boolean>(false);
+  const [isUnread, setIsUnread] = useState<boolean | null>(true);
+  const [isStarred, setIsStarred] = useState<boolean | null>(false);
+  const [isImportant, setIsImportant] = useState<boolean | null>(false);
   // Duration
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
@@ -225,13 +225,43 @@ const Popup = () => {
               <CheckBox checked={isUnread} onClick={handleClickIsUnread} />
               <span>unread</span>
             </S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsUnread}>
+              <CheckBox checked={!isUnread} onClick={handleClickIsUnread} />
+              <span>read</span>
+            </S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsUnread}>
+              <CheckBox checked={null} onClick={handleClickIsUnread} />
+              <span>both</span>
+            </S.OptionContentItem>
+          </S.OptionContent>
+          <S.OptionDivider />
+          <S.OptionContent>
             <S.OptionContentItem onClick={handleClickIsImportant}>
               <CheckBox checked={!isImportant} onClick={handleClickIsImportant} />
               <span>not important</span>
             </S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsImportant}>
+              <CheckBox checked={isImportant} onClick={handleClickIsImportant} />
+              <span>important</span>
+            </S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsImportant}>
+              <CheckBox checked={null} onClick={handleClickIsImportant} />
+              <span>both</span>
+            </S.OptionContentItem>
+          </S.OptionContent>
+          <S.OptionDivider />
+          <S.OptionContent>
             <S.OptionContentItem onClick={handleClickIsStarred}>
               <CheckBox checked={!isStarred} onClick={handleClickIsStarred} />
               <span>not starred</span>
+            </S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsStarred}>
+              <CheckBox checked={isStarred} onClick={handleClickIsStarred} />
+              <span>starred</span>
+            </S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsStarred}>
+              <CheckBox checked={null} onClick={handleClickIsStarred} />
+              <span>both</span>
             </S.OptionContentItem>
           </S.OptionContent>
         </S.OptionContainer>

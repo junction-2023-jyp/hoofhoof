@@ -31,6 +31,12 @@ export const OptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  row-gap: 14px;
+`;
+export const OptionDivider = styled.div`
+  height: 0.673px;
+  background-color: var(--primary-light, #A8B1F3);
+  opacity: 0.4;
 `;
 export const OptionTitle = styled.h2`
   display: flex;

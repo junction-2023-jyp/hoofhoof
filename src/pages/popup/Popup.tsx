@@ -10,6 +10,7 @@ import { HorseIcon } from '@root/src/assets/icons/horse';
 import { TrashIcon } from '@root/src/assets/icons/trash';
 import CleanAlert from '@root/src/components/composition/CleanAlert';
 import LoadingModal from '@root/src/components/composition/LoadingModal';
+import CleanFinishModal from '@root/src/components/composition/CleanFinishModal';
 
 const Popup = () => {
   const [mailList, setMailList] = useState<GmailListMessage[]>([]);
@@ -25,7 +26,8 @@ const Popup = () => {
   const [isImportant, setIsImportant] = useState<boolean>(false);
   // Modal, Alert
   const [openCleanAlert, setOpenCleanAlert] = useState(false);
-  const [openLoadingModal, setOpenLoadingModal] = useState(true);
+  const [openCleanFinishModal, setOpenCleanFinishModal] = useState(false);
+  const [openLoadingModal, setOpenLoadingModal] = useState(false);
 
   /**
    * Manage Authentication
@@ -53,20 +55,8 @@ const Popup = () => {
     handleChangeSearchQuery();
   }, [token]);
 
-  const [isTimerStarted, setIsTimerStarted] = useState(false);
-
   useEffect(() => {
-    let timer;
-    if (!isTimerStarted) {
-      setIsTimerStarted(true);
-      handleChangeSearchQuery();
-    } else {
-      // Throttling
-      timer = setTimeout(() => {
-        handleChangeSearchQuery();
-      }, 500);
-    }
-    return () => clearTimeout(timer);
+    handleChangeSearchQuery();
   }, [isPromotion, isSocial, startDate, endDate, isUnread, isStarred, isImportant]);
 
   /**
@@ -113,7 +103,6 @@ const Popup = () => {
         nextPageToken = res.data.nextPageToken;
       } while (nextPageToken);
       setMailList(allMails);
-      setIsTimerStarted(false);
     } catch (error) {
       console.error('Error fetching mails:', error);
     }
@@ -134,7 +123,6 @@ const Popup = () => {
   const handleClickIsImportant = () => {
     setIsImportant(!isImportant);
   };
-
   const handleClickClear = () => {
     setOpenCleanAlert(true);
   };
@@ -149,6 +137,7 @@ const Popup = () => {
         // batchDelete API 호출
         await http.post('/messages/batchDelete', { ids: batch });
       }
+      setOpenCleanFinishModal(true);
     } catch (error) {
       console.error('Error during batch delete:', error);
     } finally {
@@ -211,6 +200,7 @@ const Popup = () => {
         </S.Footer>
       </S.Container>
       <CleanAlert isOpen={openCleanAlert} setIsOpen={setOpenCleanAlert} onClickConfirm={handleClickCleanUp} />
+      <CleanFinishModal isOpen={openCleanFinishModal} setIsOpen={setOpenCleanFinishModal} />
       <LoadingModal isOpen={openLoadingModal} setIsOpen={setOpenLoadingModal} />
     </S.Wrapper>
   );

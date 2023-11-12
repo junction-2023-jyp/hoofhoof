@@ -3,11 +3,11 @@ import * as S from './style';
 import LoadingLottie from '@assets/loading.json';
 import Lottie from 'lottie-react';
 
-interface CleanFinishModalProps {
+interface CleaningModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
-const CleanFinishModal = ({ isOpen, setIsOpen }: CleanFinishModalProps) => {
+const CleaningModal = ({ isOpen, setIsOpen }: CleaningModalProps) => {
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <S.Container>
@@ -22,4 +22,4 @@ const CleanFinishModal = ({ isOpen, setIsOpen }: CleanFinishModalProps) => {
   );
 };
 
-export default CleanFinishModal;
+export default CleaningModal;

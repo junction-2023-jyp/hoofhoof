@@ -10,7 +10,7 @@ import { HorseIcon } from '@root/src/assets/icons/horse';
 import { TrashIcon } from '@root/src/assets/icons/trash';
 import CleanAlert from '@root/src/components/composition/CleanAlert';
 import LoadingModal from '@root/src/components/composition/LoadingModal';
-import CleanFinishModal from '@root/src/components/composition/CleanFinishModal';
+import CleaningModal from '@root/src/components/composition/CleanFinishModal';
 
 const Popup = () => {
   const [mailList, setMailList] = useState<GmailListMessage[]>([]);
@@ -131,17 +131,18 @@ const Popup = () => {
     const removeIds = mailList.map(mail => mail.id);
     console.log('removeIds', removeIds);
 
+    setOpenCleanFinishModal(true);
     try {
       for (let i = 0; i < removeIds.length; i += MAX_BATCH_SIZE) {
         const batch = removeIds.slice(i, i + MAX_BATCH_SIZE);
         // batchDelete API 호출
         await http.post('/messages/batchDelete', { ids: batch });
       }
-      setOpenCleanFinishModal(true);
+      setOpenCleanFinishModal(false);
+      setOpenCleanAlert(false);
+      // TODO: Nahee님 정리 끝나면 Result Page 띄우기
     } catch (error) {
       console.error('Error during batch delete:', error);
-    } finally {
-      setOpenCleanAlert(false);
     }
   };
 
@@ -200,7 +201,7 @@ const Popup = () => {
         </S.Footer>
       </S.Container>
       <CleanAlert isOpen={openCleanAlert} setIsOpen={setOpenCleanAlert} onClickConfirm={handleClickCleanUp} />
-      <CleanFinishModal isOpen={openCleanFinishModal} setIsOpen={setOpenCleanFinishModal} />
+      <CleaningModal isOpen={openCleanFinishModal} setIsOpen={setOpenCleanFinishModal} />
       <LoadingModal isOpen={openLoadingModal} setIsOpen={setOpenLoadingModal} />
     </S.Wrapper>
   );

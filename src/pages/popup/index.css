@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'sanchez';
+  src: url('../../assets/fonts/Sanchez-Regular.ttf');
+}
+
 body {
   width: 322px;
   height: 100%;

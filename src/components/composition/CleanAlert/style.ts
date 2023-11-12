@@ -10,6 +10,7 @@ export const Container = styled.div`
   border-radius: 12px;
   text-align: center;
   padding: 30px 0;
+  font-family: 'sanchez';
 `;
 export const Title = styled.h1`
   font-size: 22px;

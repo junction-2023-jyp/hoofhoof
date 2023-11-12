@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import { Category, GmailList, GmailListMessage } from '@root/src/gmail';
@@ -10,22 +10,31 @@ import { HorseIcon } from '@root/src/assets/icons/horse';
 import { TrashIcon } from '@root/src/assets/icons/trash';
 import CleanAlert from '@root/src/components/composition/CleanAlert';
 import LoadingModal from '@root/src/components/composition/LoadingModal';
+import CleaningModal from '@root/src/components/composition/CleanFinishModal';
+import useStorage from '@root/src/shared/hooks/useStorage';
+import hoofDataStorage from '@root/src/shared/storages/hoofDataStorage';
 
 const Popup = () => {
+  // TODO: nahee: hoofdata.deletedMailCount 를 사용해서 삭제된 메일 개수를 표시하시면 됩니다.
+  const hoofData = useStorage(hoofDataStorage);
   const [mailList, setMailList] = useState<GmailListMessage[]>([]);
   const [token, setToken] = useState(null);
   // Type
   const [isPromotion, setIsPromotion] = useState(false);
   const [isSocial, setIsSocial] = useState(false);
   // Status
-  const [startDate, setStartDate] = useState<Date>(new Date(0));
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [isUnread, setIsUnread] = useState<boolean>(false);
   const [isStarred, setIsStarred] = useState<boolean>(false);
   const [isImportant, setIsImportant] = useState<boolean>(false);
+  // Duration
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
   // Modal, Alert
   const [openCleanAlert, setOpenCleanAlert] = useState(false);
-  const [openLoadingModal, setOpenLoadingModal] = useState(true);
+  const [openCleanFinishModal, setOpenCleanFinishModal] = useState(false);
+  const [openLoadingModal, setOpenLoadingModal] = useState(false);
 
   /**
    * Manage Authentication
@@ -51,29 +60,22 @@ const Popup = () => {
 
   useEffect(() => {
     handleChangeSearchQuery();
+    setEndDate(new Date());
   }, [token]);
 
-  const [isTimerStarted, setIsTimerStarted] = useState(false);
+  useEffect(() => {
+    handleChangeSearchQuery();
+  }, [isPromotion, isSocial, startDate, endDate, isUnread, isStarred, isImportant]);
 
   useEffect(() => {
-    let timer;
-    if (!isTimerStarted) {
-      setIsTimerStarted(true);
-      handleChangeSearchQuery();
-    } else {
-      // Throttling
-      timer = setTimeout(() => {
-        handleChangeSearchQuery();
-      }, 500);
-    }
-    return () => clearTimeout(timer);
-  }, [isPromotion, isSocial, startDate, endDate, isUnread, isStarred, isImportant]);
+    // TODO: Nahee님 hoofData.deletedMailCount로 잘 가져오는거 확인했습니다
+    // alert(hoofData.deletedMailCount);
+  }, [hoofData]);
 
   /**
    * Event Handlers
    */
   const handleChangeSearchQuery = async () => {
-    console.log('in!');
     if (!token) {
       console.log('token is null');
       return;
@@ -90,12 +92,10 @@ const Popup = () => {
       isStarred,
       isImportant,
     });
-    // TODO: 쿼리 파라미터 넣기
     console.log('>>', query.buildQuery());
 
     setOpenLoadingModal(true);
     try {
-      setMailList([]);
       do {
         const res = await http.get<GmailList>('/messages', {
           params: {
@@ -113,7 +113,6 @@ const Popup = () => {
         nextPageToken = res.data.nextPageToken;
       } while (nextPageToken);
       setMailList(allMails);
-      setIsTimerStarted(false);
     } catch (error) {
       console.error('Error fetching mails:', error);
     }
@@ -134,7 +133,6 @@ const Popup = () => {
   const handleClickIsImportant = () => {
     setIsImportant(!isImportant);
   };
-
   const handleClickClear = () => {
     setOpenCleanAlert(true);
   };
@@ -143,17 +141,40 @@ const Popup = () => {
     const removeIds = mailList.map(mail => mail.id);
     console.log('removeIds', removeIds);
 
+    setOpenCleanFinishModal(true);
     try {
       for (let i = 0; i < removeIds.length; i += MAX_BATCH_SIZE) {
         const batch = removeIds.slice(i, i + MAX_BATCH_SIZE);
         // batchDelete API 호출
         await http.post('/messages/batchDelete', { ids: batch });
       }
+      setOpenCleanFinishModal(false);
+      setOpenCleanAlert(false);
+      hoofDataStorage.increaseDeletedMailCount(removeIds.length);
+      // TODO: Nahee님 정리 끝나면 Result Page 띄우시면 됩니다
     } catch (error) {
       console.error('Error during batch delete:', error);
-    } finally {
-      setOpenCleanAlert(false);
     }
+  };
+  const handleClickStartDate = () => {
+    const { current: startDate } = startDateRef;
+    if (startDate) {
+      startDate.click();
+    }
+  };
+  const handleClickEndDate = () => {
+    const { current: endDate } = endDateRef;
+    if (endDate) {
+      endDate.click();
+    }
+  };
+  const handleChangeStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // 입력 필드의 값을 Date 객체로 변환하여 상태를 업데이트합니다.
+    setStartDate(new Date(event.target.value));
+  };
+  const handleChangeEndDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // 입력 필드의 값을 Date 객체로 변환하여 상태를 업데이트합니다.
+    setEndDate(new Date(event.target.value));
   };
 
   const handleFinalModal = () => {
@@ -184,11 +205,11 @@ const Popup = () => {
           </button>
           <S.OptionTitle>Type</S.OptionTitle>
           <S.OptionContent>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsPromotion}>
               <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
               <span>promotion</span>
             </S.OptionContentItem>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsSocial}>
               <CheckBox checked={isSocial} onClick={handleClickIsSocial} />
               <span>social</span>
             </S.OptionContentItem>
@@ -197,15 +218,15 @@ const Popup = () => {
         <S.OptionContainer>
           <S.OptionTitle>Status</S.OptionTitle>
           <S.OptionContent>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsUnread}>
               <CheckBox checked={isUnread} onClick={handleClickIsUnread} />
               <span>unread</span>
             </S.OptionContentItem>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsImportant}>
               <CheckBox checked={isImportant} onClick={handleClickIsImportant} />
               <span>important</span>
             </S.OptionContentItem>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsStarred}>
               <CheckBox checked={isStarred} onClick={handleClickIsStarred} />
               <span>starred</span>
             </S.OptionContentItem>
@@ -216,7 +237,16 @@ const Popup = () => {
             Duration
             <p>Clear all email between the two dates</p>
           </S.OptionTitle>
-          <S.OptionContent></S.OptionContent>
+          <S.DateWrapper>
+            <S.DateContainer isBlank={startDate === null} onClick={handleClickStartDate}>
+              {startDate ? startDate.toISOString().split('T')[0] : 'Big Bang'}
+              <S.DateInput ref={startDateRef} type="date" onChange={handleChangeStartDate} />
+            </S.DateContainer>
+            <S.DateContainer onClick={handleClickEndDate}>
+              {endDate ? endDate.toISOString().split('T')[0] : null}
+              <S.DateInput ref={endDateRef} type="date" onChange={handleChangeEndDate} />
+            </S.DateContainer>
+          </S.DateWrapper>
         </S.OptionContainer>
         <S.Footer>
           <S.OptionContentItem>
@@ -228,6 +258,7 @@ const Popup = () => {
       </S.Container>
 
       <CleanAlert isOpen={openCleanAlert} setIsOpen={setOpenCleanAlert} onClickConfirm={handleClickCleanUp} />
+      <CleaningModal isOpen={openCleanFinishModal} setIsOpen={setOpenCleanFinishModal} />
       <LoadingModal isOpen={openLoadingModal} setIsOpen={setOpenLoadingModal} />
     </S.Wrapper>
   );

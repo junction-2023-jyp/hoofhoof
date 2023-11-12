@@ -7,7 +7,6 @@ export const Wrapper = styled.section`
   background: #020837;
   color: #fff;
   padding: 24px 0;
-  font-family: 'sanchez';
 `;
 export const Container = styled.div`
   display: flex;
@@ -55,6 +54,7 @@ export const OptionContentItem = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
+  cursor: pointer;
 
   .total-mail {
     color: #ae7fea;

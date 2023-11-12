@@ -11,8 +11,12 @@ import { TrashIcon } from '@root/src/assets/icons/trash';
 import CleanAlert from '@root/src/components/composition/CleanAlert';
 import LoadingModal from '@root/src/components/composition/LoadingModal';
 import CleaningModal from '@root/src/components/composition/CleanFinishModal';
+import useStorage from '@root/src/shared/hooks/useStorage';
+import hoofDataStorage from '@root/src/shared/storages/hoofDataStorage';
 
 const Popup = () => {
+  // TODO: nahee: hoofdata.deletedMailCount 를 사용해서 삭제된 메일 개수를 표시하시면 됩니다.
+  const hoofData = useStorage(hoofDataStorage);
   const [mailList, setMailList] = useState<GmailListMessage[]>([]);
   const [token, setToken] = useState(null);
   // Type
@@ -63,6 +67,10 @@ const Popup = () => {
     handleChangeSearchQuery();
   }, [isPromotion, isSocial, startDate, endDate, isUnread, isStarred, isImportant]);
 
+  useEffect(() => {
+    alert(hoofData.deletedMailCount);
+  }, [hoofData]);
+
   /**
    * Event Handlers
    */
@@ -88,7 +96,6 @@ const Popup = () => {
 
     setOpenLoadingModal(true);
     try {
-      setMailList([]);
       do {
         const res = await http.get<GmailList>('/messages', {
           params: {
@@ -143,6 +150,7 @@ const Popup = () => {
       }
       setOpenCleanFinishModal(false);
       setOpenCleanAlert(false);
+      hoofDataStorage.increaseDeletedMailCount(removeIds.length);
       // TODO: Nahee님 정리 끝나면 Result Page 띄우기
     } catch (error) {
       console.error('Error during batch delete:', error);
@@ -181,11 +189,11 @@ const Popup = () => {
         <S.OptionContainer>
           <S.OptionTitle>Type</S.OptionTitle>
           <S.OptionContent>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsPromotion}>
               <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
               <span>promotion</span>
             </S.OptionContentItem>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsSocial}>
               <CheckBox checked={isSocial} onClick={handleClickIsSocial} />
               <span>social</span>
             </S.OptionContentItem>
@@ -194,15 +202,15 @@ const Popup = () => {
         <S.OptionContainer>
           <S.OptionTitle>Status</S.OptionTitle>
           <S.OptionContent>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsUnread}>
               <CheckBox checked={isUnread} onClick={handleClickIsUnread} />
               <span>unread</span>
             </S.OptionContentItem>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsImportant}>
               <CheckBox checked={isImportant} onClick={handleClickIsImportant} />
               <span>important</span>
             </S.OptionContentItem>
-            <S.OptionContentItem>
+            <S.OptionContentItem onClick={handleClickIsStarred}>
               <CheckBox checked={isStarred} onClick={handleClickIsStarred} />
               <span>starred</span>
             </S.OptionContentItem>

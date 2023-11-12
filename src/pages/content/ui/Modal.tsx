@@ -1,6 +1,5 @@
-// Modal.tsx
-import React from 'react';
-import * as S from './style';
+import BigHorse from '@root/src/assets/icons/big-horse';
+import CloseButton from '@root/src/assets/icons/close-button';
 
 interface ModalProps {
   isOpen: boolean;
@@ -22,30 +21,35 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 1000,
   };
-
+  // /public/background_modal.png
   const modalContentStyle = {
     position: 'fixed',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    background: 'white',
+    backdropFilter: 'blur(40px)',
+    backgroundImage: 'url("/public/background_modal.png")',
+    // backgroundImage:
+    //   'url("https://raw.githubusercontent.com/Nahee-Park/server-client/assets/81923229/99b98746-6929-405f-a218-988decc5b967")',
     padding: '0 45px',
     borderRadius: '20px',
     width: '822px',
     zIndex: 1001,
-    backgroundBlendMode: 'color-dodge, normal',
-    backdropFilter: 'blur(40px)',
+    // backgroundBlendMode: 'color-dodge, normal',
+    background: '#E7D4CC',
   };
 
   const modalCloseButtonStyle = {
     position: 'absolute',
     top: '24px',
     right: '24px',
-    backgroundColor: 'black',
+    backgroundColor: 'transparent',
     width: '32px',
     height: '32px',
     padding: 0,
     cursor: 'pointer',
+    border: 'none',
+    outline: 'none',
   };
 
   const modalTopWrapStyle = {
@@ -164,7 +168,9 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
   return (
     <div style={modalOverlayStyle}>
       <div style={modalContentStyle}>
-        <button style={modalCloseButtonStyle} onClick={onClose} />
+        <button style={modalCloseButtonStyle} onClick={onClose}>
+          <CloseButton />
+        </button>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <h1
@@ -213,9 +219,12 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
               height: '199px',
               marginTop: '40px',
               marginRight: '22px',
-              backgroundColor: 'black',
-            }}
-          />
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <BigHorse />
+          </div>
         </div>
         <div style={{ strokeWidth: '1px', background: 'rgba(0, 0, 0, 0.4)', width: '100%', height: '1px' }} />
         <div
@@ -252,12 +261,17 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
           </div>
           <button
             style={{
-              backgroundColor: 'black',
               borderRadius: '12px',
               width: '190px',
               height: '64px',
               cursor: 'pointer',
-            }}>
+              backgroundColor: 'black',
+              color: 'white',
+              fontFamily: 'Pretendard',
+              fontSize: '16px',
+              fontWeight: 600,
+            }}
+            onClick={onClose}>
             YEEHAH!!!
           </button>
         </div>

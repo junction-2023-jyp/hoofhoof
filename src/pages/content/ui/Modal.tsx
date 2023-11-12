@@ -1,7 +1,9 @@
 import BigHorse from '@root/src/assets/icons/big-horse';
 import CloseButton from '@root/src/assets/icons/close-button';
+import { EmailCountEquivalent } from '@root/src/libs/emailCountEquivalent';
 import useStorage from '@root/src/shared/hooks/useStorage';
 import hoofDataStorage from '@root/src/shared/storages/hoofDataStorage';
+import { getCarbonRelatedData } from '@root/src/shared/utils/getData';
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,8 +12,9 @@ interface ModalProps {
 
 const Modal = ({ isOpen, onClose }: ModalProps) => {
   const hoofData = useStorage(hoofDataStorage);
-  console.log('hoofData', hoofData);
-  if (!isOpen) return null;
+  if (!isOpen || !hoofData) return null;
+
+  const { count, carbon, equivalent }: EmailCountEquivalent = getCarbonRelatedData(hoofData.deletedMailCount);
 
   const modalOverlayStyle = {
     display: 'block',
@@ -196,7 +199,7 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
               </div>
               <div style={modalStatsStyle}>
                 <p style={modalStatsTitleStyle}>Total</p>
-                <p style={modalStatsTextStyle}>312 g</p>
+                <p style={modalStatsTextStyle}>{carbon} g</p>
               </div>
             </div>
           </div>
@@ -208,7 +211,7 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
         <div style={modalBottomWrapStyle}>
           <div style={modalEquivalentWrapStyle}>
             <p style={modalEquivalentTitleStyle}>This is equivalent to</p>
-            <p style={modalEquivalentTextStyle}>producing one medium-sized (150g) beef burger patty</p>
+            <p style={modalEquivalentTextStyle}>{equivalent}</p>
           </div>
           <button style={modalButtonStyle} onClick={onClose}>
             YEEHAH!!!

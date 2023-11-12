@@ -1,5 +1,7 @@
 import BigHorse from '@root/src/assets/icons/big-horse';
 import CloseButton from '@root/src/assets/icons/close-button';
+import useStorage from '@root/src/shared/hooks/useStorage';
+import hoofDataStorage from '@root/src/shared/storages/hoofDataStorage';
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,6 +9,8 @@ interface ModalProps {
 }
 
 const Modal = ({ isOpen, onClose }: ModalProps) => {
+  const hoofData = useStorage(hoofDataStorage);
+  console.log('hoofData', hoofData);
   if (!isOpen) return null;
 
   const modalOverlayStyle = {

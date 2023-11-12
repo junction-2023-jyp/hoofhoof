@@ -8,7 +8,7 @@ const manifest: chrome.runtime.ManifestV3 = {
   name: packageJson.name,
   version: packageJson.version,
   description: packageJson.description,
-  permissions: ['storage', 'identity', 'activeTab', 'scripting'],
+  permissions: ['storage', 'identity', 'activeTab', 'scripting', 'tabs'],
   options_page: 'src/pages/options/index.html',
   background: {
     service_worker: 'src/pages/background/index.js',
@@ -30,6 +30,7 @@ const manifest: chrome.runtime.ManifestV3 = {
       js: ['src/pages/content/index.js'],
       // KEY for cache invalidation
       css: ['assets/css/contentStyle<KEY>.chunk.css'],
+      all_frames: true,
     },
   ],
   devtools_page: 'src/pages/devtools/index.html',
@@ -39,11 +40,11 @@ const manifest: chrome.runtime.ManifestV3 = {
       matches: ['*://*/*'],
     },
   ],
+  host_permissions: ['http://*/*', 'https://*/*'],
   oauth2: {
     client_id: '935308185746-7023qdnmd2j0tvu1vab7ke9odduglpga.apps.googleusercontent.com',
     scopes: ['https://www.googleapis.com/auth/userinfo.email', 'https://mail.google.com/'],
   },
-  all_frames: true,
 };
 
 export default manifest;

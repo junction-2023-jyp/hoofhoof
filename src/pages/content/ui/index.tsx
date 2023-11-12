@@ -1,9 +1,11 @@
 import { createRoot } from 'react-dom/client';
 import App from '@pages/content/ui/app';
 import refreshOnUpdate from 'virtual:reload-on-update-in-view';
+import { create } from 'domain';
 
 refreshOnUpdate('pages/content');
 
+let createdRoot;
 const root = document.createElement('div');
 root.id = 'chrome-extension-boilerplate-react-vite-content-view-root';
 
@@ -22,12 +24,14 @@ shadowRoot.appendChild(rootIntoShadow);
  * Please refer to the PR link above and go back to the contentStyle.css implementation, or raise a PR if you have a better way to improve it.
  */
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('request', request);
-  if (request.type === 'TOGGLE_MODAL') {
-    if (request.isOpen) {
-      //   console.log('open modal', request.status);
-      createRoot(rootIntoShadow).render(<App />);
+// open_modal message listener -> open modal
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'open_modal') {
+    if (!createdRoot) {
+      createdRoot = createRoot(rootIntoShadow);
     }
+    // const root = createRoot(rootIntoShadow);
+    createdRoot.render(<App />);
   }
+  return true;
 });

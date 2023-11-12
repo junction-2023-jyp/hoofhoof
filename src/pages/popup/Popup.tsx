@@ -100,10 +100,11 @@ const Popup = () => {
   };
 
   const handleFinalModal = () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      console.log('tabs', tabs);
-      if (tabs.length === 0) return; // 탭이 존재하지 않으면 중단
-      chrome.tabs.sendMessage(tabs[0].id, { type: 'TOGGLE_MODAL', isOpen: true });
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      const currentTabId = tabs[0].id;
+      if (currentTabId) {
+        chrome.tabs.sendMessage(currentTabId, { action: 'open_modal' });
+      }
     });
   };
 

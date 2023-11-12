@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import { Category, GmailList, GmailListMessage } from '@root/src/gmail';
@@ -19,11 +19,14 @@ const Popup = () => {
   const [isPromotion, setIsPromotion] = useState(false);
   const [isSocial, setIsSocial] = useState(false);
   // Status
-  const [startDate, setStartDate] = useState<Date>(new Date(0));
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [isUnread, setIsUnread] = useState<boolean>(false);
   const [isStarred, setIsStarred] = useState<boolean>(false);
   const [isImportant, setIsImportant] = useState<boolean>(false);
+  // Duration
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
   // Modal, Alert
   const [openCleanAlert, setOpenCleanAlert] = useState(false);
   const [openCleanFinishModal, setOpenCleanFinishModal] = useState(false);
@@ -53,6 +56,7 @@ const Popup = () => {
 
   useEffect(() => {
     handleChangeSearchQuery();
+    setEndDate(new Date());
   }, [token]);
 
   useEffect(() => {
@@ -144,6 +148,26 @@ const Popup = () => {
       console.error('Error during batch delete:', error);
     }
   };
+  const handleClickStartDate = () => {
+    const { current: startDate } = startDateRef;
+    if (startDate) {
+      startDate.click();
+    }
+  };
+  const handleClickEndDate = () => {
+    const { current: endDate } = endDateRef;
+    if (endDate) {
+      endDate.click();
+    }
+  };
+  const handleChangeStartDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // 입력 필드의 값을 Date 객체로 변환하여 상태를 업데이트합니다.
+    setStartDate(new Date(event.target.value));
+  };
+  const handleChangeEndDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // 입력 필드의 값을 Date 객체로 변환하여 상태를 업데이트합니다.
+    setEndDate(new Date(event.target.value));
+  };
 
   return (
     <S.Wrapper>
@@ -189,7 +213,16 @@ const Popup = () => {
             Duration
             <p>Clear all email between the two dates</p>
           </S.OptionTitle>
-          <S.OptionContent></S.OptionContent>
+          <S.OptionContent>
+            <S.DateContainer isBlank={startDate === null} onClick={handleClickStartDate}>
+              {startDate ? startDate.toISOString().split('T')[0] : 'Big Bang'}
+              <S.DateInput ref={startDateRef} type="date" onChange={handleChangeStartDate} />
+            </S.DateContainer>
+            <S.DateContainer onClick={handleClickEndDate}>
+              {endDate ? endDate.toISOString().split('T')[0] : null}
+              <S.DateInput ref={endDateRef} type="date" onChange={handleChangeEndDate} />
+            </S.DateContainer>
+          </S.OptionContent>
         </S.OptionContainer>
         <S.Footer>
           <S.OptionContentItem>

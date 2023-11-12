@@ -7,6 +7,7 @@ export const Wrapper = styled.section`
   background: #020837;
   color: #fff;
   padding: 24px 0;
+  font-family: 'sanchez';
 `;
 export const Container = styled.div`
   display: flex;
@@ -84,24 +85,35 @@ export const ClearButton = styled.div`
 
   transition: all 0.2s ease-in-out;
 `;
-export const LoadingText = styled.div`
-  span {
-    display: inline-block;
-    margin: 0 -0.05em;
-    animation: loadingText 0.7s infinite;
-    @for $i from 1 through 6 {
-      &:nth-child(#{$i + 1}) {
-        animation-delay: #{$i * 0.1}s;
-      }
-    }
-  }
-  @keyframes loadingText {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-2px);
-    }
+export const DateContainer = styled.div<{ isBlank?: boolean }>`
+  position: relative;
+  width: 122px;
+  height: 50px;
+  background: #161b47;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 8px;
+`;
+export const DateInput = styled.input`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  top: 0;
+  left: 0;
+
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
   }
 `;

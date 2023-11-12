@@ -16,13 +16,13 @@ const manifest: chrome.runtime.ManifestV3 = {
   },
   action: {
     default_popup: 'src/pages/popup/index.html',
-    default_icon: 'icon-34.png',
+    default_icon: 'HOOFHOOF_icon.png',
   },
   // chrome_url_overrides: {
   //   newtab: 'src/pages/newtab/index.html',
   // },
   icons: {
-    '128': 'icon-128.png',
+    '128': 'HOOFHOOF_icon.png',
   },
   content_scripts: [
     {

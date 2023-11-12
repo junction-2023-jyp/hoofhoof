@@ -158,11 +158,15 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
   };
 
   const modalButtonStyle = {
-    backgroundColor: 'black',
     borderRadius: '12px',
     width: '190px',
     height: '64px',
     cursor: 'pointer',
+    backgroundColor: 'black',
+    color: 'white',
+    fontFamily: 'Pretendard',
+    fontSize: '16px',
+    fontWeight: 600,
   };
 
   return (
@@ -171,107 +175,38 @@ const Modal = ({ isOpen, onClose }: ModalProps) => {
         <button style={modalCloseButtonStyle} onClick={onClose}>
           <CloseButton />
         </button>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <h1
-              style={{
-                fontFamily: 'Pretendard Variable',
-                fontSize: '44px',
-                fontStyle: 'normal',
-                color: 'black',
-                marginTop: '34px',
-                marginBottom: '18px',
-              }}>
-              Congratulations!
-            </h1>
-            <p
-              style={{
-                fontFamily: 'Sanchez',
-                fontSize: '22px',
-                fontStyle: 'normal',
-                color: '#4d3f3f',
-                opacity: 0.6,
-                lineHeight: '134%',
-                textAlign: 'left',
-                margin: 0,
-              }}>
+        <div style={modalTopWrapStyle}>
+          <div style={modalTopTextWrapStyle}>
+            <h1 style={modalHeaderStyle}>Congratulations!</h1>
+            <p style={modalBodyTextStyle}>
               By cleaning up your inbox today, you've reduced your
               <br />
               digital carbon footprint. Here's how much carbon
               <br />
               emissions you've saved.
             </p>
-            <div
-              style={{ display: 'flex', color: 'black', columnGap: '59px', marginTop: '50px', marginBottom: '38px' }}>
-              <div style={{ display: 'flex', columnGap: '14px', alignItems: 'center' }}>
-                <p style={{ fontFamily: 'Pretendard Variable', fontSize: '16px', margin: 0 }}>Now</p>
-                <p style={{ fontFamily: 'Pretendard Variable', fontSize: '34px', margin: 0 }}>10 g</p>
+            <div style={modalStatsWrapStyle}>
+              <div style={modalStatsStyle}>
+                <p style={modalStatsTitleStyle}>Now</p>
+                <p style={modalStatsTextStyle}>10 g</p>
               </div>
-              <div style={{ display: 'flex', columnGap: '14px', alignItems: 'center' }}>
-                <p style={{ fontFamily: 'Pretendard Variable', fontSize: '16px', margin: 0 }}>Total</p>
-                <p style={{ fontFamily: 'Pretendard Variable', fontSize: '34px', margin: 0 }}>312 g</p>
+              <div style={modalStatsStyle}>
+                <p style={modalStatsTitleStyle}>Total</p>
+                <p style={modalStatsTextStyle}>312 g</p>
               </div>
             </div>
           </div>
-          <div
-            style={{
-              width: '199px',
-              height: '199px',
-              marginTop: '40px',
-              marginRight: '22px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <div style={modalImageStyle}>
             <BigHorse />
           </div>
         </div>
-        <div style={{ strokeWidth: '1px', background: 'rgba(0, 0, 0, 0.4)', width: '100%', height: '1px' }} />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: '20px',
-            paddingBottom: '40px',
-          }}>
-          <div style={{ display: 'flex', columnGap: '35px', color: 'black', alignItems: 'center' }}>
-            <p
-              style={{
-                fontFamily: 'Pretendard Variable',
-                fontSize: '16px',
-                fontStyle: 'normal',
-                width: '97px',
-                textAlign: 'left',
-                height: 'fit-content',
-                margin: 0,
-              }}>
-              This is equivalent to
-            </p>
-            <p
-              style={{
-                fontFamily: 'Pretendard Variable',
-                fontSize: '19px',
-                textAlign: 'left',
-                width: '307px',
-                margin: 0,
-              }}>
-              producing one medium-sized (150g) beef burger patty
-            </p>
+        <div style={modalDividerStyle} />
+        <div style={modalBottomWrapStyle}>
+          <div style={modalEquivalentWrapStyle}>
+            <p style={modalEquivalentTitleStyle}>This is equivalent to</p>
+            <p style={modalEquivalentTextStyle}>producing one medium-sized (150g) beef burger patty</p>
           </div>
-          <button
-            style={{
-              borderRadius: '12px',
-              width: '190px',
-              height: '64px',
-              cursor: 'pointer',
-              backgroundColor: 'black',
-              color: 'white',
-              fontFamily: 'Pretendard',
-              fontSize: '16px',
-              fontWeight: 600,
-            }}
-            onClick={onClose}>
+          <button style={modalButtonStyle} onClick={onClose}>
             YEEHAH!!!
           </button>
         </div>

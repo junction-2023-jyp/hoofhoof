@@ -152,6 +152,9 @@ const Popup = () => {
       setOpenCleanAlert(false);
       hoofDataStorage.increaseDeletedMailCount(removeIds.length);
       // TODO: Nahee님 정리 끝나면 Result Page 띄우시면 됩니다
+
+      handleFinalModal();
+      window.close();
     } catch (error) {
       console.error('Error during batch delete:', error);
     }
@@ -200,9 +203,9 @@ const Popup = () => {
           </S.TitleHorse>
         </S.TitleContainer>
         <S.OptionContainer>
-          <button style={{ color: 'white' }} onClick={handleFinalModal}>
+          {/* <button style={{ color: 'white' }} onClick={handleFinalModal}>
             Open Modal
-          </button>
+          </button> */}
           <S.OptionTitle>Type</S.OptionTitle>
           <S.OptionContent>
             <S.OptionContentItem onClick={handleClickIsPromotion}>
@@ -223,12 +226,12 @@ const Popup = () => {
               <span>unread</span>
             </S.OptionContentItem>
             <S.OptionContentItem onClick={handleClickIsImportant}>
-              <CheckBox checked={isImportant} onClick={handleClickIsImportant} />
-              <span>important</span>
+              <CheckBox checked={!isImportant} onClick={handleClickIsImportant} />
+              <span>not important</span>
             </S.OptionContentItem>
             <S.OptionContentItem onClick={handleClickIsStarred}>
-              <CheckBox checked={isStarred} onClick={handleClickIsStarred} />
-              <span>starred</span>
+              <CheckBox checked={!isStarred} onClick={handleClickIsStarred} />
+              <span>not starred</span>
             </S.OptionContentItem>
           </S.OptionContent>
         </S.OptionContainer>

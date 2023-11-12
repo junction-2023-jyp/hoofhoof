@@ -165,6 +165,10 @@ const Popup = () => {
     });
   };
 
+  // useEffect(() => {
+  //   handleFinalModal();
+  // }, []);
+
   return (
     <S.Wrapper>
       <S.Container>
@@ -175,6 +179,9 @@ const Popup = () => {
           </S.TitleHorse>
         </S.TitleContainer>
         <S.OptionContainer>
+          <button style={{ color: 'white' }} onClick={handleFinalModal}>
+            Open Modal
+          </button>
           <S.OptionTitle>Type</S.OptionTitle>
           <S.OptionContent>
             <S.OptionContentItem>
@@ -219,6 +226,7 @@ const Popup = () => {
           <S.ClearButton onClick={handleClickClear}>CLEAN</S.ClearButton>
         </S.Footer>
       </S.Container>
+
       <CleanAlert isOpen={openCleanAlert} setIsOpen={setOpenCleanAlert} onClickConfirm={handleClickCleanUp} />
       <LoadingModal isOpen={openLoadingModal} setIsOpen={setOpenLoadingModal} />
     </S.Wrapper>

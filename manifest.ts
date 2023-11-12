@@ -42,7 +42,7 @@ const manifest: chrome.runtime.ManifestV3 = {
   ],
   host_permissions: ['http://*/*', 'https://*/*'],
   oauth2: {
-    client_id: '935308185746-b7vpogsnljdb65vp212c2snnboun7h82.apps.googleusercontent.com',
+    client_id: '935308185746-7023qdnmd2j0tvu1vab7ke9odduglpga.apps.googleusercontent.com',
     scopes: ['https://www.googleapis.com/auth/userinfo.email', 'https://mail.google.com/'],
   },
 };

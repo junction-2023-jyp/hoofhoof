@@ -2,8 +2,14 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 
-const App: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(true);
+interface AppProps {
+  isOpen?: boolean;
+}
+
+const App: React.FC<AppProps> = ({ isOpen = true }) => {
+  console.log('app 로딩');
+  const [modalOpen, setModalOpen] = useState(isOpen);
+  console.log('modalOpen', modalOpen);
 
   const closeModal = () => setModalOpen(false);
 

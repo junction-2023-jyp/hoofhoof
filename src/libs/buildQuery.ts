@@ -8,6 +8,7 @@ export type SearchQueryOptions = {
   isUnread?: boolean;
   isImportant?: boolean;
   isStarred?: boolean;
+  //   categories?: Category[];
 };
 
 export class SearchQuery {

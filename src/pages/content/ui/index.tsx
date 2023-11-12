@@ -1,7 +1,6 @@
 import { createRoot } from 'react-dom/client';
-import App from '@pages/content/ui/app';
+import App from '@root/src/pages/content/ui/app';
 import refreshOnUpdate from 'virtual:reload-on-update-in-view';
-import { create } from 'domain';
 
 refreshOnUpdate('pages/content');
 
@@ -31,7 +30,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       createdRoot = createRoot(rootIntoShadow);
     }
     // const root = createRoot(rootIntoShadow);
-    createdRoot.render(<App />);
+    createdRoot.render(<App isOpen={true} />);
   }
   return true;
 });
+// const createdRoot = createRoot(shadowRoot);
+// createdRoot.render(<App />);

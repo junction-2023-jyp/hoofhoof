@@ -85,6 +85,12 @@ export const ClearButton = styled.div`
 
   transition: all 0.2s ease-in-out;
 `;
+export const DateWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-around;
+`;
 export const DateContainer = styled.div<{ isBlank?: boolean }>`
   position: relative;
   width: 122px;

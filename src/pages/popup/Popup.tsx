@@ -213,7 +213,7 @@ const Popup = () => {
             Duration
             <p>Clear all email between the two dates</p>
           </S.OptionTitle>
-          <S.OptionContent>
+          <S.DateWrapper>
             <S.DateContainer isBlank={startDate === null} onClick={handleClickStartDate}>
               {startDate ? startDate.toISOString().split('T')[0] : 'Big Bang'}
               <S.DateInput ref={startDateRef} type="date" onChange={handleChangeStartDate} />
@@ -222,7 +222,7 @@ const Popup = () => {
               {endDate ? endDate.toISOString().split('T')[0] : null}
               <S.DateInput ref={endDateRef} type="date" onChange={handleChangeEndDate} />
             </S.DateContainer>
-          </S.OptionContent>
+          </S.DateWrapper>
         </S.OptionContainer>
         <S.Footer>
           <S.OptionContentItem>

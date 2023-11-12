@@ -3,18 +3,30 @@ import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import { Category, GmailList, GmailListMessage } from '@root/src/gmail';
 import { http } from '@root/src/libs/axios';
-import { SearchQuery } from '@root/src/libs/buildQuery';
+import { SearchQuery, SearchQueryOptions } from '@root/src/libs/buildQuery';
 import * as S from './style';
+import CheckBox from '@root/src/components/CheckBox';
+import { HorseIcon } from '@root/src/assets/icons/horse';
+import { TrashIcon } from '@root/src/assets/icons/trash';
+import CleanAlert from '@root/src/components/composition/CleanAlert';
 
 const Popup = () => {
   const [mailList, setMailList] = useState<GmailListMessage[]>([]);
 
+  // Type
+  const [isPromotion, setIsPromotion] = useState(false);
+  const [isSocial, setIsSocial] = useState(false);
+  // Status
   const [startDate, setStartDate] = useState<Date>(new Date(0));
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [categories, setcategories] = useState<Category[]>(['promotions', 'social']);
   const [isUnread, setIsUnread] = useState<boolean>(true);
   const [isStarred, setIsStarred] = useState<boolean>(false);
   const [isImportant, setIsImportant] = useState<boolean>(false);
+  // Search Query
+  const [searchQuery, setSearchQuery] = useState<SearchQueryOptions>({});
+  // Modal, Alert
+  const [openCleanAlert, setOpenCleanAlert] = useState(true);
 
   // category:promotions OR category:social
   /**
@@ -37,8 +49,6 @@ const Popup = () => {
     getAuthToken();
   }, []);
 
-  // 맨 처음, 기본적으로 가져오기
-
   /**
    * Event Handlers
    */
@@ -47,6 +57,8 @@ const Popup = () => {
     let allMails = [];
 
     const query = new SearchQuery({
+      isPromotion,
+      isSocial,
       startDate,
       endDate,
       categories,
@@ -56,6 +68,7 @@ const Popup = () => {
     });
     // TODO: 쿼리 파라미터 넣기
     console.log('>>', query.buildQuery());
+    setSearchQuery(query.get());
 
     try {
       setMailList([]);
@@ -99,17 +112,69 @@ const Popup = () => {
     }
   };
 
+  const handleClickIsPromotion = () => {
+    setIsPromotion(!isPromotion);
+  };
+
+  const handleClickClear = () => {
+    setOpenCleanAlert(true);
+  };
+
   return (
     <S.Wrapper>
-      <div>
-        <h1>HOOF x2</h1>
-        {/* {mailList.map((mail: GmailMessage) => (
-          <p key={mail.id}>{mail.id}</p>
-        ))} */}
-        <br />
-      </div>
-      <button onClick={handleClickGetList}>Get Mailing List</button>
-      <button onClick={handleClickCleanUp}>Delete Mail</button>
+      <S.Container>
+        <S.TitleContainer>
+          <S.TitleLogo />
+          <S.TitleHorse>
+            <HorseIcon />
+          </S.TitleHorse>
+        </S.TitleContainer>
+        <S.OptionContainer>
+          <S.OptionTitle>Type</S.OptionTitle>
+          <S.OptionContent>
+            <S.OptionContentItem>
+              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <span>promotion</span>
+            </S.OptionContentItem>
+            <S.OptionContentItem>
+              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <span>social</span>
+            </S.OptionContentItem>
+          </S.OptionContent>
+        </S.OptionContainer>
+        <S.OptionContainer>
+          <S.OptionTitle>Status</S.OptionTitle>
+          <S.OptionContent>
+            <S.OptionContentItem>
+              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <span>unread</span>
+            </S.OptionContentItem>
+            <S.OptionContentItem>
+              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <span>important</span>
+            </S.OptionContentItem>
+            <S.OptionContentItem>
+              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <span>starred</span>
+            </S.OptionContentItem>
+          </S.OptionContent>
+        </S.OptionContainer>
+        <S.OptionContainer>
+          <S.OptionTitle>
+            Duration
+            <p>Clear all email between the two dates</p>
+          </S.OptionTitle>
+          <S.OptionContent></S.OptionContent>
+        </S.OptionContainer>
+        <S.Footer>
+          <S.OptionContentItem>
+            <TrashIcon />
+            <span className="total-mail">Total {mailList.length}</span>
+          </S.OptionContentItem>
+          <S.ClearButton onClick={handleClickClear}>CLEAN</S.ClearButton>
+        </S.Footer>
+      </S.Container>
+      <CleanAlert isOpen={openCleanAlert} setIsOpen={setOpenCleanAlert} />
     </S.Wrapper>
   );
 };

@@ -1,6 +1,8 @@
 import { Category } from '../gmail';
 
 export type SearchQueryOptions = {
+  isPromotion?: boolean;
+  isSocial?: boolean;
   startDate?: Date;
   endDate?: Date;
   categories?: Category[];
@@ -14,6 +16,10 @@ export class SearchQuery {
 
   constructor(options: SearchQueryOptions) {
     this.options = options;
+  }
+
+  public get() {
+    return this.options;
   }
 
   public buildQuery(): string {

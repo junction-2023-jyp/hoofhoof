@@ -68,7 +68,8 @@ const Popup = () => {
   }, [isPromotion, isSocial, startDate, endDate, isUnread, isStarred, isImportant]);
 
   useEffect(() => {
-    alert(hoofData.deletedMailCount);
+    // TODO: Nahee님 hoofData.deletedMailCount로 잘 가져오는거 확인했습니다
+    // alert(hoofData.deletedMailCount);
   }, [hoofData]);
 
   /**
@@ -91,7 +92,6 @@ const Popup = () => {
       isStarred,
       isImportant,
     });
-    // TODO: 쿼리 파라미터 넣기
     console.log('>>', query.buildQuery());
 
     setOpenLoadingModal(true);
@@ -151,7 +151,7 @@ const Popup = () => {
       setOpenCleanFinishModal(false);
       setOpenCleanAlert(false);
       hoofDataStorage.increaseDeletedMailCount(removeIds.length);
-      // TODO: Nahee님 정리 끝나면 Result Page 띄우기
+      // TODO: Nahee님 정리 끝나면 Result Page 띄우시면 됩니다
     } catch (error) {
       console.error('Error during batch delete:', error);
     }

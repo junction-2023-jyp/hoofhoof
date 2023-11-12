@@ -9,6 +9,7 @@ export const Container = styled.div`
   color: white;
   width: 286px;
   height: 360px;
+  font-family: 'sanchez';
 `;
 export const Description = styled.div`
   font-size: 22px;

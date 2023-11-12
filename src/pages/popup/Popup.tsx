@@ -63,7 +63,6 @@ const Popup = () => {
    * Event Handlers
    */
   const handleChangeSearchQuery = async () => {
-    console.log('in!');
     if (!token) {
       console.log('token is null');
       return;

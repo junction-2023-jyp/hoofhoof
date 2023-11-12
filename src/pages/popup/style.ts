@@ -84,3 +84,24 @@ export const ClearButton = styled.div`
 
   transition: all 0.2s ease-in-out;
 `;
+export const LoadingText = styled.div`
+  span {
+    display: inline-block;
+    margin: 0 -0.05em;
+    animation: loadingText 0.7s infinite;
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i + 1}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }
+  @keyframes loadingText {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-2px);
+    }
+  }
+`;

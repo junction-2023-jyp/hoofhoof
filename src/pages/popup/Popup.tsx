@@ -3,32 +3,30 @@ import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import { Category, GmailList, GmailListMessage } from '@root/src/gmail';
 import { http } from '@root/src/libs/axios';
-import { SearchQuery, SearchQueryOptions } from '@root/src/libs/buildQuery';
+import { SearchQuery } from '@root/src/libs/buildQuery';
 import * as S from './style';
 import CheckBox from '@root/src/components/CheckBox';
 import { HorseIcon } from '@root/src/assets/icons/horse';
 import { TrashIcon } from '@root/src/assets/icons/trash';
 import CleanAlert from '@root/src/components/composition/CleanAlert';
+import LoadingModal from '@root/src/components/composition/LoadingModal';
 
 const Popup = () => {
   const [mailList, setMailList] = useState<GmailListMessage[]>([]);
-
+  const [token, setToken] = useState(null);
   // Type
   const [isPromotion, setIsPromotion] = useState(false);
   const [isSocial, setIsSocial] = useState(false);
   // Status
   const [startDate, setStartDate] = useState<Date>(new Date(0));
   const [endDate, setEndDate] = useState<Date>(new Date());
-  const [categories, setcategories] = useState<Category[]>(['promotions', 'social']);
-  const [isUnread, setIsUnread] = useState<boolean>(true);
+  const [isUnread, setIsUnread] = useState<boolean>(false);
   const [isStarred, setIsStarred] = useState<boolean>(false);
   const [isImportant, setIsImportant] = useState<boolean>(false);
-  // Search Query
-  const [searchQuery, setSearchQuery] = useState<SearchQueryOptions>({});
   // Modal, Alert
-  const [openCleanAlert, setOpenCleanAlert] = useState(true);
+  const [openCleanAlert, setOpenCleanAlert] = useState(false);
+  const [openLoadingModal, setOpenLoadingModal] = useState(true);
 
-  // category:promotions OR category:social
   /**
    * Manage Authentication
    */
@@ -39,20 +37,47 @@ const Popup = () => {
         return;
       }
       console.log('token', token);
+      setToken(token);
       http.interceptors.request.use(config => {
         config.headers['Authorization'] = `Bearer ${token}`;
         return config;
       });
     });
   };
+
   useEffect(() => {
     getAuthToken();
   }, []);
 
+  useEffect(() => {
+    handleChangeSearchQuery();
+  }, [token]);
+
+  const [isTimerStarted, setIsTimerStarted] = useState(false);
+
+  useEffect(() => {
+    let timer;
+    if (!isTimerStarted) {
+      setIsTimerStarted(true);
+      handleChangeSearchQuery();
+    } else {
+      // Throttling
+      timer = setTimeout(() => {
+        handleChangeSearchQuery();
+      }, 500);
+    }
+    return () => clearTimeout(timer);
+  }, [isPromotion, isSocial, startDate, endDate, isUnread, isStarred, isImportant]);
+
   /**
    * Event Handlers
    */
-  const handleClickGetList = async () => {
+  const handleChangeSearchQuery = async () => {
+    console.log('in!');
+    if (!token) {
+      console.log('token is null');
+      return;
+    }
     let nextPageToken = null;
     let allMails = [];
 
@@ -61,15 +86,14 @@ const Popup = () => {
       isSocial,
       startDate,
       endDate,
-      categories,
       isUnread,
       isStarred,
       isImportant,
     });
     // TODO: 쿼리 파라미터 넣기
     console.log('>>', query.buildQuery());
-    setSearchQuery(query.get());
 
+    setOpenLoadingModal(true);
     try {
       setMailList([]);
       do {
@@ -82,7 +106,6 @@ const Popup = () => {
         });
 
         const messages = res.data.messages;
-        console.log('messages', messages);
         if (messages) {
           allMails = [...allMails, ...messages];
         }
@@ -90,11 +113,31 @@ const Popup = () => {
         nextPageToken = res.data.nextPageToken;
       } while (nextPageToken);
       setMailList(allMails);
+      setIsTimerStarted(false);
     } catch (error) {
       console.error('Error fetching mails:', error);
     }
+    setOpenLoadingModal(false);
+  };
+  const handleClickIsPromotion = () => {
+    setIsPromotion(!isPromotion);
+  };
+  const handleClickIsSocial = () => {
+    setIsSocial(!isSocial);
+  };
+  const handleClickIsUnread = () => {
+    setIsUnread(!isUnread);
+  };
+  const handleClickIsStarred = () => {
+    setIsStarred(!isStarred);
+  };
+  const handleClickIsImportant = () => {
+    setIsImportant(!isImportant);
   };
 
+  const handleClickClear = () => {
+    setOpenCleanAlert(true);
+  };
   const handleClickCleanUp = async () => {
     const MAX_BATCH_SIZE = 1000;
     const removeIds = mailList.map(mail => mail.id);
@@ -106,18 +149,11 @@ const Popup = () => {
         // batchDelete API 호출
         await http.post('/messages/batchDelete', { ids: batch });
       }
-      console.log('모든 메일 삭제 완료');
     } catch (error) {
       console.error('Error during batch delete:', error);
+    } finally {
+      setOpenCleanAlert(false);
     }
-  };
-
-  const handleClickIsPromotion = () => {
-    setIsPromotion(!isPromotion);
-  };
-
-  const handleClickClear = () => {
-    setOpenCleanAlert(true);
   };
 
   return (
@@ -137,7 +173,7 @@ const Popup = () => {
               <span>promotion</span>
             </S.OptionContentItem>
             <S.OptionContentItem>
-              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <CheckBox checked={isSocial} onClick={handleClickIsSocial} />
               <span>social</span>
             </S.OptionContentItem>
           </S.OptionContent>
@@ -146,15 +182,15 @@ const Popup = () => {
           <S.OptionTitle>Status</S.OptionTitle>
           <S.OptionContent>
             <S.OptionContentItem>
-              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <CheckBox checked={isUnread} onClick={handleClickIsUnread} />
               <span>unread</span>
             </S.OptionContentItem>
             <S.OptionContentItem>
-              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <CheckBox checked={isImportant} onClick={handleClickIsImportant} />
               <span>important</span>
             </S.OptionContentItem>
             <S.OptionContentItem>
-              <CheckBox checked={isPromotion} onClick={handleClickIsPromotion} />
+              <CheckBox checked={isStarred} onClick={handleClickIsStarred} />
               <span>starred</span>
             </S.OptionContentItem>
           </S.OptionContent>
@@ -174,9 +210,10 @@ const Popup = () => {
           <S.ClearButton onClick={handleClickClear}>CLEAN</S.ClearButton>
         </S.Footer>
       </S.Container>
-      <CleanAlert isOpen={openCleanAlert} setIsOpen={setOpenCleanAlert} />
+      <CleanAlert isOpen={openCleanAlert} setIsOpen={setOpenCleanAlert} onClickConfirm={handleClickCleanUp} />
+      <LoadingModal isOpen={openLoadingModal} setIsOpen={setOpenLoadingModal} />
     </S.Wrapper>
   );
 };
 
-export default withErrorBoundary(withSuspense(Popup, <div> Loading ... </div>), <div> Error Occur </div>);
+export default withErrorBoundary(withSuspense(Popup, <div> OpenLoadingModal ... </div>), <div> Error Occur </div>);

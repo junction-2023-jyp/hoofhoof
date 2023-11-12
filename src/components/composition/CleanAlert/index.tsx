@@ -4,8 +4,9 @@ import * as S from './style';
 interface CleanAlertProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  onClickConfirm?: () => void;
 }
-const CleanAlert = ({ isOpen, setIsOpen }: CleanAlertProps) => {
+const CleanAlert = ({ isOpen, setIsOpen, onClickConfirm }: CleanAlertProps) => {
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <S.Container>
@@ -22,7 +23,7 @@ const CleanAlert = ({ isOpen, setIsOpen }: CleanAlertProps) => {
             your carbon footprint?
           </span>
         </S.Description>
-        <S.Button>CONFIRM</S.Button>
+        <S.Button onClick={onClickConfirm}>CONFIRM</S.Button>
       </S.Container>
     </Modal>
   );

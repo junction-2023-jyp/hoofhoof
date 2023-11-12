@@ -5,7 +5,6 @@ export type SearchQueryOptions = {
   isSocial?: boolean;
   startDate?: Date;
   endDate?: Date;
-  categories?: Category[];
   isUnread?: boolean;
   isImportant?: boolean;
   isStarred?: boolean;
@@ -18,10 +17,6 @@ export class SearchQuery {
     this.options = options;
   }
 
-  public get() {
-    return this.options;
-  }
-
   public buildQuery(): string {
     const queryParts: string[] = [];
 
@@ -30,10 +25,10 @@ export class SearchQuery {
     if (this.options.endDate) queryParts.push(`before:${this.formatDate(this.options.endDate)}`);
 
     // Add categories query if present
-    if (this.options.categories?.length) {
-      const categoryQuery = this.options.categories.map(category => `category:${category}`).join(' OR ');
-      queryParts.push(categoryQuery);
-    }
+    // if (this.options.categories?.length) {
+    //   const categoryQuery = this.options.categories.map(category => `category:${category}`).join(' OR ');
+    //   queryParts.push(categoryQuery);
+    // }
 
     // Add flags based on their presence and value
     this.addFlagQuery(queryParts, 'is:unread', this.options.isUnread);

@@ -3,8 +3,8 @@ import * as S from './style';
 
 interface CheckBoxProps {
   checked: boolean;
-  isDisabled?: boolean;
   onClick: () => void;
+  isDisabled?: boolean;
 }
 
 const CheckBox = ({ checked, isDisabled, onClick, ...props }: CheckBoxProps) => {
